@@ -10,10 +10,10 @@ BLENDER_RELEASE_DIR := ${BLENDER_DIR}/${BLENDER_RELEASE_NAME}
 
 BLENDER_CMD := ${BLENDER_RELEASE_DIR}/blender
 
-DEBUG_BLEND_FILE := debug.blend
+OUTPUT_DIR := output
+DEBUG_BLEND_FILE := ${OUTPUT_DIR}/debug.blend
 
-# RUN_PY_FILE := generate_sphere.py
-RUN_PY_FILE := load_depth_image_and_modify.py
+RUN_PY_FILE := main.py
 
 
 .PHONY: setup
@@ -51,9 +51,9 @@ run-blender-python:
 		--python \
 		${RUN_PY_FILE} \
 			-- \
-			config=config/load_depth_image_and_modify.yaml \
+			config=config/main.yml \
 			input.depth_image_path=./data/bench.png \
-			output_filepath_obj="template_out.obj" \
+			output_filepath_obj="${OUTPUT_DIR}/template_out.obj" \
 			debug.blend_filepath=${DEBUG_BLEND_FILE}
 
 .PHONY: run-debug-blend-file
