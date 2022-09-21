@@ -13,7 +13,7 @@ bpy:
 
 input:
   objects:
-    - obj_filepath: "template_ellipsoid.obj"
+    - obj_filepath: "template/template_ellipsoid.obj"
       # - obj_filepath: "data/sphere.obj"
       obj_name: "sphere"
       location: [0.0, 0.0, 0.0]
@@ -24,5 +24,6 @@ render_filepath: "sample_output" # sample_output.png
 output_filepath_obj: "./sample_output.obj"
 debug_mode: true
 debug: # if debug_mode is True
-  output_dir: "." # need to current directory?
+  output_dir: "./output" # need to current directory?
+  mask_image_path: "${debug.output_dir}/mask.png"
   blend_filepath: "${debug.output_dir}/debug.blend"

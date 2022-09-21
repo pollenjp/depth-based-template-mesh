@@ -53,9 +53,8 @@ class InputConfig:
 @dataclass
 class DebugConfig:
     output_dir: str
+    mask_image_path: str
     blend_filepath: str
-    # output_dir: Path = Path.cwd()  # need to current directory?
-    # blend_filepath: Path = Path.cwd() / "debug.blend"
 
 
 @dataclass

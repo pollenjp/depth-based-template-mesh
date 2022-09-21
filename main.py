@@ -83,7 +83,16 @@ def move_mesh_vertices(
         mesh_vertex.co = obj.matrix_world.inverted() @ global_target_location
 
 
-def create_mask(im: np.ndarray, background: int) -> PIL.Image.Image:
+def create_mask(im: np.ndarray, background: int) -> np.ndarray:
+    """0,1のマスクを作成する
+
+    Args:
+        im (np.ndarray): _description_
+        background (int): _description_
+
+    Returns:
+        np.ndarray: _description_
+    """
 
     new_im = im.copy()
 
@@ -93,9 +102,6 @@ def create_mask(im: np.ndarray, background: int) -> PIL.Image.Image:
     size: int = 5
     kernel = np.ones((size, size), np.uint8)
     new_im = cv2.dilate(new_im, kernel, iterations=1)
-
-    # debug
-    cv2.imwrite("mask.png", new_im * 255)
 
     return new_im
 
@@ -227,10 +233,16 @@ def main():
     # 1: foreground
     # 0: background
     # TODO: クラス化して内部か外部かを判定するコードにしてしまったほうが良い. (画像と座標の向きが一致している必要があるため.)
-    mask_image = create_mask(
+    mask_image: np.ndarray = create_mask(
         np.array(PIL.Image.open(Path(config.input.depth_image_path))),
         background=255,
     )
+
+    if config.debug_mode:
+        filepath: Path = Path(config.debug.mask_image_path)
+        filepath.parent.mkdir(parents=True, exist_ok=True)
+        cv2.imwrite(str(filepath), mask_image * 255)
+
     mask_image = mask_image[:, ::-1]  # horizontal flip
     (y_min, z_min, y_max, z_max) = get_bounding_box_yz(blender_main_val.mold_obj_base)
 
