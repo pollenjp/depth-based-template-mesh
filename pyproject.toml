@@ -1,0 +1,27 @@
+[tool.black]
+line-length = 120
+
+[tool.poetry]
+name = "create_sphere"
+version = "0.1.0"
+description = ""
+authors = ["pollenjp <polleninjp@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.11"
+numpy = "^1.21.4"
+omegaconf = "^2.1.1"
+sympy = "^1.10.1"
+Pillow = "^9.1.1"
+opencv-python = "^4.6.0"
+
+
+[tool.poetry.dev-dependencies]
+black = "^21.11b1"
+flake8 = "^4.0.1"
+isort = "^5.10.1"
+mypy = "^0.910"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

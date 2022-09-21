@@ -1,0 +1,28 @@
+bpy:
+  context:
+    scene:
+      render:
+        engine: # Blender internal engine for rendering
+          # E.g. CYCLES, BLENDER_EEVEE, ...'
+          BLENDER_EEVEE
+        image_settings:
+          color_mode: "RGBA" # ('RGB', 'RGBA', ...)
+          file_format: "PNG" # ('PNG', 'OPEN_EXR', 'JPEG, ...)
+        resolution_x: 600
+        resolution_y: 600
+
+input:
+  objects:
+    - obj_filepath: "template_ellipsoid.obj"
+      # - obj_filepath: "data/sphere.obj"
+      obj_name: "sphere"
+      location: [0.0, 0.0, 0.0]
+  depth_image_path: "./data/00_depth0001.png"
+  # depth_image_path: "./data/bench.png"
+  # depth_image_path: "./data/bench_depth0001.png"
+render_filepath: "sample_output" # sample_output.png
+output_filepath_obj: "./sample_output.obj"
+debug_mode: true
+debug: # if debug_mode is True
+  output_dir: "." # need to current directory?
+  blend_filepath: "${debug.output_dir}/debug.blend"
