@@ -36,7 +36,7 @@ function install_blender_python () {
 	# Use a subshell to avoid changing the current path
 	(
 		mkdir -p "${BLENDER_BIN_PATH}"
-		if [[ -h "${BLENDER_BIN_PATH}/blender" ]]; then
+		if ! [[ -h "${BLENDER_BIN_PATH}/blender" ]]; then
 			ln -s "${BLENDER_CMD}" "${BLENDER_BIN_PATH}/blender"
 		fi
 	)
@@ -47,10 +47,10 @@ function create_python_symlink () {
 	# Use a subshell to avoid changing the current path
 	(
 		cd "${BLENDER_PYTHON_PATH}"
-		if [[ -h "python" ]]; then
+		if ! [[ -h "python" ]]; then
 			ln -s "${PYTHON_CMD_NAME}" python
 		fi
-		if [[ -h "python3" ]]; then
+		if ! [[ -h "python3" ]]; then
 			ln -s "${PYTHON_CMD_NAME}" python3
 		fi
 	)
