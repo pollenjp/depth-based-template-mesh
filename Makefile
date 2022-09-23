@@ -28,9 +28,6 @@ lint:
 	black --check .
 	flake8 --exclude '.*' .
 
-run-blender:
-	$(BLENDER_CMD)
-
 ##################
 # concrete tasks #
 ##################
