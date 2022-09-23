@@ -1,6 +1,26 @@
 [tool.black]
 line-length = 120
 
+# mypy global options:
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+
+# mypy per-module options:
+
+[[tool.mypy.overrides]]
+strict = true
+module = [
+    "bpy.*",
+    "cv2.*",
+    "mathutils.*",
+    "numpy.*",
+    "PIL.*",
+]
+ignore_missing_imports = true
+
 [tool.poetry]
 name = "create_sphere"
 version = "0.1.0"
