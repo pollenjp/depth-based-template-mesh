@@ -3,29 +3,29 @@
 set -eux
 
 # <https://download.blender.org/release/>
-BLENDER_VERSION_MAJOR_MINOR=2.93
-PYTHON_CMD_NAME=python3.9
+BLENDER_VERSION_MAJOR_MINOR="2.93"
+BLENDER_VERSION_PATCH="9"
+PYTHON_CMD_NAME="python3.9"
 
-BLENDER_RELEASE_NAME=blender-${BLENDER_VERSION_MAJOR_MINOR}.5-linux-x64
-
-CMD_DIR=$(realpath .local)
-BLENDER_DIR=${CMD_DIR}/blender
-BLENDER_RELEASE_DIR=${BLENDER_DIR}/${BLENDER_RELEASE_NAME}
-CACHE_DIR=${CMD_DIR}/.cache/blender
-BLENDER_BIN_PATH=${BLENDER_RELEASE_DIR}/bin # create for adding to PATH
-BLENDER_CMD=${BLENDER_RELEASE_DIR}/blender
-BLENDER_PYTHON_PATH=${BLENDER_RELEASE_DIR}/${BLENDER_VERSION_MAJOR_MINOR}/python/bin
+BLENDER_RELEASE_NAME="blender-${BLENDER_VERSION_MAJOR_MINOR}.${BLENDER_VERSION_PATCH}-linux-x64"
+CMD_DIR="$(realpath .local)"
+BLENDER_DIR="${CMD_DIR}/blender"
+BLENDER_RELEASE_DIR="${BLENDER_DIR}"
+CACHE_DIR="${CMD_DIR}/.cache/blender"
+BLENDER_BIN_PATH="${BLENDER_RELEASE_DIR}/bin" # create for adding to PATH
+BLENDER_CMD="${BLENDER_RELEASE_DIR}/blender"
+BLENDER_PYTHON_PATH="${BLENDER_RELEASE_DIR}/${BLENDER_VERSION_MAJOR_MINOR}/python/bin"
 
 function download_blender () {
 	# Use a subshell to avoid changing the current path
 	(
-		mkdir -p "${BLENDER_DIR}" "${CACHE_DIR}"
+		mkdir -p "${CACHE_DIR}"
 		cd "${CACHE_DIR}"
 		if [[ ! -f "${BLENDER_RELEASE_NAME}.tar.xz" ]]; then
 			wget -c "https://download.blender.org/release/Blender${BLENDER_VERSION_MAJOR_MINOR}/${BLENDER_RELEASE_NAME}.tar.xz"
 		fi
-		cd "${BLENDER_DIR}"
 		tar Jxfv "${CACHE_DIR}/${BLENDER_RELEASE_NAME}.tar.xz"
+		mv "${BLENDER_RELEASE_NAME}" "${BLENDER_DIR}"
 	)
 }
 if [[ ! -d ${BLENDER_RELEASE_DIR} ]]; then

@@ -5,10 +5,7 @@ BLENDER_DIR := ${CMD_DIR}/blender
 
 # <https://download.blender.org/release/>
 BLENDER_VERSION_MAJOR_MINOR := 2.93
-BLENDER_RELEASE_NAME := blender-${BLENDER_VERSION_MAJOR_MINOR}.5-linux-x64
-BLENDER_RELEASE_DIR := ${BLENDER_DIR}/${BLENDER_RELEASE_NAME}
-
-BLENDER_CMD := ${BLENDER_RELEASE_DIR}/blender
+BLENDER_CMD := ${BLENDER_DIR}/blender
 
 OUTPUT_DIR := output
 DEBUG_BLEND_FILE := ${OUTPUT_DIR}/debug.blend
@@ -22,7 +19,7 @@ setup:
 
 .PHONY: resetup
 resetup:
-	rm -rf ${BLENDER_RELEASE_DIR}
+	rm -rf "${BLENDER_DIR}"
 	./setup.sh
 
 .PHONY: lint

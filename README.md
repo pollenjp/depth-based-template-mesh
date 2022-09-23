@@ -14,6 +14,6 @@ direnv allow
 ### requirements.txt
 
 ```sh
-pip install -U poetry
-poetry install
+python -m pip install -U poetry
+python -m poetry install
 ```

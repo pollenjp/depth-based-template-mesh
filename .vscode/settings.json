@@ -1,0 +1,8 @@
+{
+    "python.defaultInterpreterPath": "${workspaceFolder}/.local/blender/2.93/python/bin/python",
+    "python.linting.flake8Path": "${workspaceFolder}/.local/blender/2.93/python/bin/flake8",
+    "python.formatting.blackPath": "${workspaceFolder}/.local/blender/2.93/python/bin/black",
+    "python.sortImports.path": "${workspaceFolder}/.local/blender/2.93/python/bin/isort",
+    "python.linting.mypyPath": "${workspaceFolder}/.local/blender/2.93/python/bin/mypy",
+    "[python]": {}
+}
