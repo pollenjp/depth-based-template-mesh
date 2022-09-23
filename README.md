@@ -7,13 +7,6 @@
 ### 必要ファイルのダウンロードとPATHを設定
 
 ```sh
-./setup.sh
+make setup
 direnv allow
-```
-
-### requirements.txt
-
-```sh
-python -m pip install -U poetry
-python -m poetry install
 ```

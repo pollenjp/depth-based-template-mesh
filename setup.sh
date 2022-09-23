@@ -10,11 +10,11 @@ PYTHON_CMD_NAME="python3.9"
 BLENDER_RELEASE_NAME="blender-${BLENDER_VERSION_MAJOR_MINOR}.${BLENDER_VERSION_PATCH}-linux-x64"
 CMD_DIR="$(realpath .local)"
 BLENDER_DIR="${CMD_DIR}/blender"
-BLENDER_RELEASE_DIR="${BLENDER_DIR}"
 CACHE_DIR="${CMD_DIR}/.cache/blender"
-BLENDER_BIN_PATH="${BLENDER_RELEASE_DIR}/bin" # create for adding to PATH
-BLENDER_CMD="${BLENDER_RELEASE_DIR}/blender"
-BLENDER_PYTHON_PATH="${BLENDER_RELEASE_DIR}/${BLENDER_VERSION_MAJOR_MINOR}/python/bin"
+BLENDER_BIN_PATH="${BLENDER_DIR}/bin" # create for adding to PATH
+BLENDER_CMD="${BLENDER_DIR}/blender"
+BLENDER_PYTHON_PATH="${BLENDER_DIR}/${BLENDER_VERSION_MAJOR_MINOR}/python/bin"
+BLENDER_PYTHON_CMD="${BLENDER_PYTHON_PATH}/${PYTHON_CMD_NAME}"
 
 function download_blender () {
 	# Use a subshell to avoid changing the current path
@@ -28,7 +28,7 @@ function download_blender () {
 		mv "${BLENDER_RELEASE_NAME}" "${BLENDER_DIR}"
 	)
 }
-if [[ ! -d ${BLENDER_RELEASE_DIR} ]]; then
+if [[ ! -d ${BLENDER_DIR} ]]; then
 	download_blender
 fi
 
@@ -62,12 +62,19 @@ function install_pip () {
 	(
 		cd "${BLENDER_PYTHON_PATH}"
 		curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-		"./${PYTHON_CMD_NAME}" get-pip.py
+		"${BLENDER_PYTHON_CMD}" get-pip.py
 	)
 }
 if [[ ! -f "${BLENDER_PYTHON_PATH}/pip" ]]; then
 	install_pip
 fi
+
+if comand -v pyenv 2>&1 /dev/null; then
+	pyenv local system
+fi
+
+"${BLENDER_PYTHON_CMD}" -m pip install -U poetry
+"${BLENDER_PYTHON_CMD}" -m poetry install
 
 target_envrc_path=".envrc"
 touch "${target_envrc_path}"
