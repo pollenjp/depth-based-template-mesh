@@ -8,11 +8,12 @@ from pathlib import Path
 
 # Third Party Library
 import bpy
-import cv2  # type: ignore
+import cv2
 import mathutils
+import nptyping as npt
 import numpy as np
-import PIL  # type: ignore
-import PIL.Image  # type: ignore
+import PIL
+import PIL.Image
 from omegaconf import OmegaConf
 
 logger = getLogger(__name__)
@@ -21,17 +22,17 @@ logger.addHandler(NullHandler())
 sys.path.insert(0, f"{Path(__file__).parent / 'src'}")
 
 if t.TYPE_CHECKING:
-    # First Party Library
-    from src.lib3d import utils  # type: ignore
-    from src.lib3d.load_obj import load_obj  # type: ignore
-    from src.lib3d.types import BlenderMainReturn  # type: ignore
-    from src.lib3d.types import ConfigModel  # type: ignore
+    # Local Library
+    from .src.lib3d import utils  # type: ignore
+    from .src.lib3d.load_obj import load_obj  # type: ignore
+    from .src.lib3d.types import BlenderMainReturn  # type: ignore
+    from .src.lib3d.types import ConfigModel
 else:
     # First Party Library
-    from lib3d import utils  # type: ignore
-    from lib3d.load_obj import load_obj  # type: ignore
-    from lib3d.types import BlenderMainReturn  # type: ignore
-    from lib3d.types import ConfigModel  # type: ignore
+    from lib3d import utils
+    from lib3d.load_obj import load_obj
+    from lib3d.types import BlenderMainReturn
+    from lib3d.types import ConfigModel
 
 
 def get_args() -> ConfigModel:
@@ -83,7 +84,10 @@ def move_mesh_vertices(
         mesh_vertex.co = obj.matrix_world.inverted() @ global_target_location
 
 
-def create_mask(im: np.ndarray, background: int) -> np.ndarray:
+def create_mask(
+    im: npt.NDArray[npt.Shape["*, ..."], npt.Int],
+    background: int,
+) -> npt.NDArray[npt.Shape["*, ..."], npt.Int]:
     """0,1のマスクを作成する
 
     Args:
@@ -106,7 +110,7 @@ def create_mask(im: np.ndarray, background: int) -> np.ndarray:
     return new_im
 
 
-def get_bounding_box_yz(obj3d):
+def get_bounding_box_yz(obj3d: bpy.types.Object) -> t.Tuple[float, float, float, float]:
     y_max = -float("inf")
     y_min = +float("inf")
     z_max = -float("inf")
@@ -123,12 +127,12 @@ def get_bounding_box_yz(obj3d):
 def move_mesh_vertices_with_mask(
     template_obj: bpy.types.Object,
     mold_obj: bpy.types.Object,
-    mask_array: np.ndarray,
+    mask_array: npt.NDArray[npt.Shape["*, *"], npt.Int],
     # upper left, upper right, lower left, lower right
-    y_min,
-    z_min,
-    y_max,
-    z_max,
+    y_min: float,
+    z_min: float,
+    y_max: float,
+    z_max: float,
     debug: bool = False,
 ) -> None:
     im_height, im_width = mask_array.shape[:2]
@@ -199,7 +203,7 @@ def move_mesh_vertices_with_mask(
             t_v.co = template_obj.matrix_world.inverted() @ best_intersection
 
 
-def main():
+def main() -> None:
     # Standard Library
     import pprint
 
@@ -233,7 +237,7 @@ def main():
     # 1: foreground
     # 0: background
     # TODO: クラス化して内部か外部かを判定するコードにしてしまったほうが良い. (画像と座標の向きが一致している必要があるため.)
-    mask_image: np.ndarray = create_mask(
+    mask_image: npt.NDArray[npt.Shape["*, *"], npt.Int] = create_mask(
         np.array(PIL.Image.open(Path(config.input.depth_image_path))),
         background=255,
     )

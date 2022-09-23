@@ -9,6 +9,7 @@ from pathlib import Path
 # Third Party Library
 import bpy
 import mathutils
+import nptyping as npt
 import numpy as np
 import PIL
 import PIL.Image
@@ -33,7 +34,10 @@ class RangeXY:
 
 
 def depth_map2plane(
-    depth_arr: np.ndarray, z_max: float = 1.0, grid_resolution: int = 135, background: int = 0
+    depth_arr: npt.NDArray[npt.Shape["*, *"], npt.Float],
+    z_max: float = 1.0,
+    grid_resolution: int = 135,
+    background: int = 0,
 ) -> bpy.types.Object:
     """
 
@@ -135,7 +139,7 @@ def load_obj(config: ConfigModel) -> BlenderMainReturn:
     # Load model #
     ##############
 
-    def load_wavefront_obj(obj_path: Path, obj_name: str = None) -> bpy.types.Object:
+    def load_wavefront_obj(obj_path: Path, obj_name: t.Optional[str] = None) -> bpy.types.Object:
         bpy.ops.object.select_all(action="DESELECT")  # deselect
         bpy.ops.import_scene.obj(filepath=str(obj_path))
         obj: bpy.types.Object = bpy.context.selected_objects[0]
@@ -172,7 +176,10 @@ def load_obj(config: ConfigModel) -> BlenderMainReturn:
     bpy.ops.object.modifier_apply(modifier=decimate_modifier.name)
 
     # rotate
-    def rotate_obj(obj: bpy.types.Object, euler: Euler = Euler(map(math.radians, (0.0, 90.0, 180.0)), "XYZ")) -> None:
+    def rotate_obj(
+        obj: bpy.types.Object,
+        euler: Euler = Euler(map(math.radians, (0.0, 90.0, 180.0)), "XYZ"),
+    ) -> bpy.types.Object:
         """
         https://blender.stackexchange.com/questions/36647/python-low-level-apply-rotation-to-an-object
         """

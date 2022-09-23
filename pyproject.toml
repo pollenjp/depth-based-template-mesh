@@ -5,17 +5,22 @@ line-length = 120
 
 [tool.mypy]
 python_version = "3.9"
+strict = true
 warn_return_any = true
 warn_unused_configs = true
 
 # mypy per-module options:
 
 [[tool.mypy.overrides]]
-strict = true
+module = "sympy.*"
+disallow_untyped_calls = false
+
+[[tool.mypy.overrides]]
 module = [
     "bpy.*",
     "cv2.*",
     "mathutils.*",
+    "nptyping.*",
     "numpy.*",
     "PIL.*",
 ]
@@ -41,6 +46,11 @@ black = "^21.11b1"
 flake8 = "^4.0.1"
 isort = "^5.10.1"
 mypy = "^0.910"
+
+[tool.poetry.group.dev.dependencies]
+nptyping = "^2.3.1"
+nox = "^2022.8.7"
+autoflake8 = "^0.4.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

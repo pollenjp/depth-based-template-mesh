@@ -11,9 +11,13 @@ import bmesh  # type: ignore # no stub file
 import bpy
 import mathutils
 import numpy as np
-from sympy import Line3D
-from sympy import Plane
-from sympy import Point3D
+
+# from sympy import Line3D
+# from sympy import Plane
+# from sympy import Point3D
+from sympy.geometry.line import Line3D
+from sympy.geometry.plane import Plane
+from sympy.geometry.point import Point3D
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())
@@ -31,15 +35,15 @@ def get_randomint_point(
     return mathutils.Vector((random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)))
 
 
-def sampling_on_plane(p1, normal_vector) -> t.Tuple[float, float, float]:
-    plane: Plane = Plane(p1, normal_vector)
+def sampling_on_plane(p1: Point3D, normal_vector: Point3D) -> t.Tuple[float, float, float]:
+    plane: Plane = t.cast(Plane, Plane(p1, normal_vector))  # type: ignore # error: Call to untyped function
     n: Point3D = plane.normal_vector
-
     # sample_x = Point3D(np.random.randint(3, 50, size=3))
-    sample_x = Point3D(np.random.rand(3))
-
-    line = Line3D(sample_x, sample_x + 2 * Point3D(n))  # TODO: tkitou
-    return tuple(map(float, plane.intersection(line)[0]))
+    sample_x: Point3D = Point3D(np.random.rand(3))  # type: ignore # error: Call to untyped function
+    # TODO: tkitou
+    line: Line3D = Line3D(sample_x, sample_x + 2 * Point3D(n))  # type: ignore # error: Call to untyped function
+    intersection: Point3D = plane.intersection(line)[0]  # type: ignore # error: Call to untyped function
+    return (intersection[0], intersection[1], intersection[2])
 
 
 _LocationLike = t.TypeVar("_LocationLike", t.List[int], t.Tuple[float, float, float], mathutils.Vector)

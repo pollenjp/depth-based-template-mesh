@@ -1,5 +1,6 @@
 [flake8]
 # E231: https://github.com/psf/black/issues/1289
 # E203, E501, W503: https://black.readthedocs.io/en/stable/the_black_code_style.html#line-length
-ignore = E203, E231, E501, W503
+# F722: for nptyping
+ignore = E203, E231, E501, W503, F722
 max-line-length = 120
