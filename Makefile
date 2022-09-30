@@ -50,6 +50,13 @@ run-blender-python:
 			output_filepath_obj="${OUTPUT_DIR}/template_out.obj" \
 			debug.blend_filepath=${DEBUG_BLEND_FILE}
 
+.PHONY: rendering
+rendering:
+	${BLENDER_CMD} \
+		--background \
+		--python \
+		create_3dr2n2_with_depth.py
+
 .PHONY: run-debug-blend-file
 run-debug-blend-file:
 	${MAKE} kill

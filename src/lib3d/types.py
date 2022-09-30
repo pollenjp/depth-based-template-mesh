@@ -1,6 +1,7 @@
 # Standard Library
 import typing as t
 from dataclasses import dataclass
+from dataclasses import field
 
 # Third Party Library
 import bpy.types
@@ -74,3 +75,33 @@ class BlenderMainReturn:
     template_obj: bpy.types.Object
     mold_obj_base: bpy.types.Object
     mold_obj_sub: bpy.types.Object
+
+
+@dataclass
+class CameraConfig:
+    location: t.Tuple[float, float, float]
+    max_depth_distance: float
+
+
+@dataclass
+class SceneObjectsConfig:
+    cameras: t.List[CameraConfig] = field(default_factory=list)
+
+
+@dataclass
+class DebugRenderRGBConfig:
+    output_dir: str
+    blend_filepath: str
+
+
+@dataclass
+class RenderRGBDConfig:
+    bpy: BpyConfig
+    scene_objects: SceneObjectsConfig
+
+    shapenet_root_path: str
+    output_root_dir: str
+    metadata_filepath: str
+
+    debug_mode: bool
+    debug: t.Optional[DebugRenderRGBConfig] = None
