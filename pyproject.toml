@@ -31,6 +31,9 @@ name = "create_sphere"
 version = "0.1.0"
 description = ""
 authors = ["pollenjp <polleninjp@gmail.com>"]
+packages = [
+    { include = "lib3d", from = "src" },
+]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"

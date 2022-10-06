@@ -59,7 +59,7 @@ def main() -> None:
     output_base_dir.mkdir(parents=True, exist_ok=True)
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
-        future_to_fpath: t.Dict[concurrent.futures.Future, Cmd] = {}
+        future_to_fpath: t.Dict[concurrent.futures.Future[None], Cmd] = {}
         cmd: Cmd
         for i, filepath in enumerate(search_file_iter(args.data_dir)):
             if i > 2:
@@ -92,7 +92,7 @@ def main() -> None:
             )
             future_to_fpath[executor.submit(run_cmd, cmd)] = cmd
 
-        future: concurrent.futures.Future
+        future: concurrent.futures.Future[None]
         for future in concurrent.futures.as_completed(future_to_fpath):
             cmd = future_to_fpath[future]
             try:

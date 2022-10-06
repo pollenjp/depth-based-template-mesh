@@ -11,10 +11,6 @@ import bmesh  # type: ignore # no stub file
 import bpy
 import mathutils
 import numpy as np
-
-# from sympy import Line3D
-# from sympy import Plane
-# from sympy import Point3D
 from sympy.geometry.line import Line3D
 from sympy.geometry.plane import Plane
 from sympy.geometry.point import Point3D
@@ -37,13 +33,13 @@ def get_randomint_point(
 
 def sampling_on_plane(p1: Point3D, normal_vector: Point3D) -> t.Tuple[float, float, float]:
     plane: Plane = t.cast(Plane, Plane(p1, normal_vector))  # type: ignore # error: Call to untyped function
-    n: Point3D = plane.normal_vector
+    n: Point3D = t.cast(Point3D, plane.normal_vector)
     # sample_x = Point3D(np.random.randint(3, 50, size=3))
     sample_x: Point3D = Point3D(np.random.rand(3))  # type: ignore # error: Call to untyped function
     # TODO: tkitou
     line: Line3D = Line3D(sample_x, sample_x + 2 * Point3D(n))  # type: ignore # error: Call to untyped function
-    intersection: Point3D = plane.intersection(line)[0]  # type: ignore # error: Call to untyped function
-    return (intersection[0], intersection[1], intersection[2])
+    intersection: Point3D = t.cast(Point3D, plane.intersection(line)[0])  # type: ignore # error: Call to untyped function
+    return (float(intersection.x), float(intersection.y), float(intersection.z))
 
 
 _LocationLike = t.TypeVar("_LocationLike", t.List[int], t.Tuple[float, float, float], mathutils.Vector)
@@ -82,13 +78,13 @@ def create_mesh_object(
 
     new_object = bpy.data.objects.new(f"{name}_object", new_mesh)
 
-    collection: t.Optional[bpy.types.Collection] = None
-    for collection in bpy.data.collections:
-        if collection.name == scene_collection_name:
-            break
-    if collection is None:
-        collection = bpy.data.collections.new(f"{scene_collection_name}")
-        bpy.context.scene.collection.children.link(collection)
+    name2collection: t.Dict[str, bpy.types.Collection] = {c.name: c for c in bpy.data.collections}
+
+    if scene_collection_name not in name2collection:
+        name2collection[scene_collection_name] = bpy.data.collections.new(f"{scene_collection_name}")
+        bpy.context.scene.collection.children.link(name2collection[scene_collection_name])
+
+    collection: bpy.types.Collection = name2collection[scene_collection_name]
     collection.objects.link(new_object)
 
     return

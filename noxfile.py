@@ -11,6 +11,7 @@ from nox.sessions import Session
 
 python_code_path_list: List[str] = [
     "src",
+    "scripts",
     "main.py",
     "noxfile.py",
 ]
@@ -53,7 +54,7 @@ def install_package(session: Session, dev: bool = False) -> None:
 def format(session: Session) -> None:
     env: Dict[str, str] = {}
     env.update(env_common)
-    kwargs: SessionKwargs = dict(env=env, success_codes=[0, 1])
+    kwargs: SessionKwargs = {"env": env, "success_codes": [0, 1]}
 
     install_package(session, dev=True)
     session.run(
@@ -74,7 +75,7 @@ def format(session: Session) -> None:
 def lint(session: Session) -> None:
     env: Dict[str, str] = {}
     env.update(env_common)
-    kwargs: SessionKwargs = dict(env=env)
+    kwargs: SessionKwargs = {"env": env}
 
     install_package(session, dev=True)
     session.run("flake8", "--statistics", "--count", "--show-source", *python_code_path_list, **kwargs)
@@ -88,7 +89,7 @@ def lint(session: Session) -> None:
 def test(session: Session) -> None:
     env: Dict[str, str] = {}
     env.update(env_common)
-    kwargs: SessionKwargs = dict(env=env)
+    kwargs: SessionKwargs = {"env": env}
 
     install_package(session, dev=True)
     session.run("pytest", **kwargs)
