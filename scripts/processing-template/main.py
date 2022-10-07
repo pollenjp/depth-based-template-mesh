@@ -16,23 +16,14 @@ import PIL
 import PIL.Image
 from omegaconf import OmegaConf
 
+# First Party Library
+from lib3d import utils
+from lib3d.load_obj import load_obj
+from lib3d.types import BlenderMainReturn
+from lib3d.types import ConfigModel
+
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())
-
-sys.path.insert(0, f"{Path(__file__).parent / 'src'}")
-
-if t.TYPE_CHECKING:
-    # Local Library
-    from .src.lib3d import utils  # type: ignore
-    from .src.lib3d.load_obj import load_obj  # type: ignore
-    from .src.lib3d.types import BlenderMainReturn  # type: ignore
-    from .src.lib3d.types import ConfigModel
-else:
-    # First Party Library
-    from lib3d import utils
-    from lib3d.load_obj import load_obj
-    from lib3d.types import BlenderMainReturn
-    from lib3d.types import ConfigModel
 
 
 def get_args() -> ConfigModel:

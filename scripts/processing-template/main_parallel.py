@@ -29,7 +29,7 @@ def get_args() -> argparse.Namespace:
 def search_file_iter(dir: Path) -> t.Iterator[Path]:
     pattern = re.compile(
         # ignore files started from period (.)
-        pattern=r"^(?!.*^\.)depth0001.png",
+        pattern=r"^(?!.*^\.).*depth0001.png",
     )
     for _dirpath, _dirnames, _filenames in os.walk(dir):
         for _filename in _filenames:
@@ -56,6 +56,9 @@ def main() -> None:
     blender_cmd: Path = (Path.cwd() / ".local/blender/blender").resolve()
     assert blender_cmd.exists(), f"{blender_cmd} does not exists"
 
+    py_file: Path = (Path(__file__).parent / "main.py").resolve()
+    assert py_file.exists(), f"{py_file} does not exists"
+
     output_base_dir: Path = args.out_dir
     output_base_dir.mkdir(parents=True, exist_ok=True)
 
@@ -63,8 +66,8 @@ def main() -> None:
         future_to_fpath: t.Dict[concurrent.futures.Future[None], Cmd] = {}
         cmd: Cmd
         for i, filepath in enumerate(search_file_iter(args.data_dir)):
-            if i > 2:
-                break
+            # if i > 2:
+            #     break
             logger.info(f"{i:>5}: {filepath}")
             if not filepath.exists():
                 logger.error(f"{filepath} is not exists")
@@ -79,7 +82,7 @@ def main() -> None:
                     str(blender_cmd),
                     "--background",
                     "--python",
-                    "main.py",
+                    f"{py_file}",
                     "--",
                     "config=config/main.yml",
                     f"input.depth_image_path={filepath.resolve()}",
