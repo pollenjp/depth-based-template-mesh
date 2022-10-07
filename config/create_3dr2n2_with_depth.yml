@@ -18,7 +18,9 @@ scene_objects:
     # - location: [0, 1, 0.6]
     # - location: [8.0, 7.0, 4.0]
 
-shapenet_root_path: "/media/pollenjp/DATAHDD8TB/share/share01/dataset/ShapeNet/ShapeNetCore.v1"
+# shapenet_root_path: "/media/pollenjp/DATAHDD8TB/share/share01/dataset/ShapeNet/ShapeNetCore.v1"
+shapenet_root_path: "~/workdir/data/dataset/ShapeNet/raw/ShapeNetCore.v1"
+# shapenet_root_path: "~/workdir/data/dataset/ShapeNet_for_P2M/ShapeNetP2M"
 output_root_dir: "./output/rendering"
 # metadata_filepath: ???
 metadata_filepath: "/media/pollenjp/DATAHDD8TB/dataset/ShapeNet_for_P2M/ShapeNetP2M/04530566/ffffe224db39febe288b05b36358465d/rendering/rendering_metadata.txt"

@@ -19,7 +19,7 @@ logger.addHandler(NullHandler())
 
 
 def get_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="このプログラムの説明（なくてもよい）")
+    parser = argparse.ArgumentParser(description="")
     parser.add_argument("--data_dir", required=True, type=lambda x: Path(x).expanduser().absolute())
     parser.add_argument("--out_dir", required=True, type=lambda x: Path(x).expanduser().absolute())
     args = parser.parse_args()
@@ -29,7 +29,7 @@ def get_args() -> argparse.Namespace:
 def search_file_iter(dir: Path) -> t.Iterator[Path]:
     pattern = re.compile(
         # ignore files started from period (.)
-        pattern=r"^(?!.*^\.)depth0001.png",
+        pattern=r"^(?!.*^\.)rendering_metadata.txt",
     )
     for _dirpath, _dirnames, _filenames in os.walk(dir):
         for _filename in _filenames:
@@ -42,12 +42,13 @@ class Cmd:
     cmd: t.List[str]
     category_id: str
     object_id: str
+    env: t.Optional[t.Dict[str, str]] = None
     stdout: t.Optional[t.TextIO] = None
     stderr: t.Optional[t.TextIO] = None
 
 
 def run_cmd(cmd: Cmd) -> None:
-    subprocess.run(cmd.cmd, stdout=cmd.stdout, stderr=cmd.stderr)
+    subprocess.run(cmd.cmd, stdout=cmd.stdout, stderr=cmd.stderr, env=cmd.env)
 
 
 def main() -> None:
@@ -56,15 +57,20 @@ def main() -> None:
     blender_cmd: Path = (Path.cwd() / ".local/blender/blender").resolve()
     assert blender_cmd.exists(), f"{blender_cmd} does not exists"
 
+    py_file: Path = (Path(__file__).parent / "create_3dr2n2_with_depth.py").resolve()
+    assert py_file.exists(), f"{py_file} does not exists"
+
     output_base_dir: Path = args.out_dir
     output_base_dir.mkdir(parents=True, exist_ok=True)
+
+    default_config: Path = Path.cwd() / "config" / "create_3dr2n2_with_depth.yml"
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
         future_to_fpath: t.Dict[concurrent.futures.Future[None], Cmd] = {}
         cmd: Cmd
         for i, filepath in enumerate(search_file_iter(args.data_dir)):
-            if i > 2:
-                break
+            # if i > 2:
+            #     break
             logger.info(f"{i:>5}: {filepath}")
             if not filepath.exists():
                 logger.error(f"{filepath} is not exists")
@@ -79,15 +85,15 @@ def main() -> None:
                     str(blender_cmd),
                     "--background",
                     "--python",
-                    "main.py",
+                    f"{py_file}",
                     "--",
-                    "config=config/main.yml",
-                    f"input.depth_image_path={filepath.resolve()}",
-                    f"output_filepath_obj={output_filepath_obj}",
+                    f"output_root_dir={output_base_dir}",
+                    f"metadata_filepath={filepath}",
                     "debug_mode=False",
                 ],
                 category_id=filepath.parents[3].name,
                 object_id=filepath.parents[2].name,
+                env={"APP_CONFIG_PATH": f"{default_config}"},
                 stdout=None,
                 stderr=None,
             )

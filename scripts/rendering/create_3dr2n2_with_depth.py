@@ -13,25 +13,16 @@ import bpy
 import mathutils
 from omegaconf import OmegaConf
 
+# First Party Library
+from lib3d.types import BpyConfig
+from lib3d.types import RenderRGBDConfig
+from lib3d.types import SceneObjectsConfig
+
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())
 
-sys.path.insert(0, f"{Path(__file__).parent / 'src'}")
-
-if t.TYPE_CHECKING:
-    # Local Library
-    from .src.lib3d.types import BpyConfig
-    from .src.lib3d.types import RenderRGBDConfig
-    from .src.lib3d.types import SceneObjectsConfig
-else:
-    # First Party Library
-    from lib3d.types import BpyConfig
-    from lib3d.types import RenderRGBDConfig
-    from lib3d.types import SceneObjectsConfig
-
 
 _PathLike = t.TypeVar("_PathLike", Path, str)
-_LocationLike = t.TypeVar("_LocationLike", t.List[int], t.Tuple[float, float, float], mathutils.Vector)
 
 
 def parse_config() -> RenderRGBDConfig:
@@ -60,7 +51,7 @@ def parse_config() -> RenderRGBDConfig:
     return config
 
 
-def convert_to_location_vector(location: _LocationLike) -> mathutils.Vector:
+def convert_to_location_vector(location: t.Union[t.List[int], t.Tuple[float, float, float]]) -> mathutils.Vector:
     if len(location) != 3:
         raise ValueError(f"{location=} not supported format!")
     if isinstance(location, mathutils.Vector):
@@ -215,7 +206,7 @@ class ShapeNetRender:
         model_filepath: Path = Path(object_filepath)
         if model_filepath.suffix == ".obj":
             obj = self.load_wavefront_obj(obj_path=str(model_filepath), obj_name=object_name)
-            obj.location = convert_to_location_vector(mathutils.Vector((0, 0, 0)))
+            obj.location = convert_to_location_vector((0, 0, 0))
             logger.info(f"{obj.name=}, {obj.location=}, {obj.data.name=}")
             return obj
         else:
