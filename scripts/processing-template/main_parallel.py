@@ -22,6 +22,7 @@ def get_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="このプログラムの説明（なくてもよい）")
     parser.add_argument("--data_dir", required=True, type=lambda x: Path(x).expanduser().absolute())
     parser.add_argument("--out_dir", required=True, type=lambda x: Path(x).expanduser().absolute())
+    parser.add_argument("--num_workers", type=int, default=os.cpu_count())
     args = parser.parse_args()
     return args
 
@@ -62,7 +63,7 @@ def main() -> None:
     output_base_dir: Path = args.out_dir
     output_base_dir.mkdir(parents=True, exist_ok=True)
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=args.num_workers) as executor:
         future_to_fpath: t.Dict[concurrent.futures.Future[None], Cmd] = {}
         cmd: Cmd
         for i, filepath in enumerate(search_file_iter(args.data_dir)):
@@ -113,7 +114,7 @@ if __name__ == "__main__":
 
     logging.basicConfig(
         format="[%(asctime)s][%(levelname)s][%(filename)s:%(lineno)d] - %(message)s",
-        level=logging.INFO,
+        level=logging.WARNING,
     )
 
     main()

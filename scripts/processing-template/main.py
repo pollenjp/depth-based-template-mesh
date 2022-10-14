@@ -202,7 +202,6 @@ def main() -> None:
         format="[%(asctime)s][%(levelname)s][%(filename)s:%(lineno)d] - %(message)s",
         level=logging.WARNING,
     )
-    logger.setLevel(logging.INFO)
 
     logger.info(f"\n{pprint.pformat(sys.path)}")
 
