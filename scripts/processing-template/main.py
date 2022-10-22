@@ -177,7 +177,7 @@ def move_mesh_vertices_with_mask(
             if t_v_global.dot(intersection) < 0:
                 continue
 
-            # TODO: check inside polygon or not
+            # check inside polygon or not
             # https://qiita.com/Mikoshi/items/9bc6215347c00fd849b3
             # if inside break forloop
             vertices: t.List[mathutils.Vector] = [
