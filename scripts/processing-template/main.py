@@ -166,9 +166,9 @@ def move_mesh_vertices_with_mask(
                 or (intersection.z > z_max)
             ):
                 continue
-            w: int = int(im_width * (1 - (intersection.y - y_min) / (y_max - y_min)))
-            h: int = int(im_height * (1 - (intersection.z - z_min) / (z_max - z_min)))
-            assert 0 <= w < im_width and 0 <= h < im_height
+            w: int = int(im_width * (1 - (intersection.y - (y_min - 1)) / (y_max - (y_min - 1))))
+            h: int = int(im_height * (1 - (intersection.z - (z_min - 1)) / (z_max - (z_min - 1))))
+            assert 0 <= w < im_width and 0 <= h < im_height, f"{w=}, {im_width=}, {h=}, {im_height=}"
             if mask_array[h, w] == 0:  # skip, if background
                 continue
 
