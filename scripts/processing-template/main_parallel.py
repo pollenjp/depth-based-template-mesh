@@ -38,6 +38,17 @@ def search_file_iter(dir: Path) -> t.Iterator[Path]:
                 yield Path(_dirpath) / _filename
 
 
+def data_file_iter(dir: Path) -> t.Iterator[Path]:
+    with open(file=dir / "train_tf.txt", mode="rt") as f:
+        line: str
+        for line in f:
+            line = line.rstrip()
+            if not line:
+                continue
+            fpath = Path(line[17:])
+            yield dir / fpath.parent / f"{fpath.stem}_depth0001.png"
+
+
 @dataclass
 class Cmd:
     cmd: t.List[str]
@@ -66,9 +77,8 @@ def main() -> None:
     with concurrent.futures.ProcessPoolExecutor(max_workers=args.num_workers) as executor:
         future_to_fpath: t.Dict[concurrent.futures.Future[None], Cmd] = {}
         cmd: Cmd
-        for i, filepath in enumerate(search_file_iter(args.data_dir)):
-            # if i > 2:
-            #     break
+        # for i, filepath in enumerate(search_file_iter(args.data_dir)):
+        for i, filepath in enumerate(data_file_iter(args.data_dir)):
             logger.info(f"{i:>5}: {filepath}")
             if not filepath.exists():
                 logger.error(f"{filepath} is not exists")
