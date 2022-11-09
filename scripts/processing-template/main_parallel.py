@@ -22,6 +22,11 @@ def get_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="このプログラムの説明（なくてもよい）")
     parser.add_argument("--data_dir", required=True, type=lambda x: Path(x).expanduser().absolute())
     parser.add_argument("--out_dir", required=True, type=lambda x: Path(x).expanduser().absolute())
+    parser.add_argument(
+        "--data_filepath",
+        type=lambda x: Path(x).expanduser().absolute(),
+        help="'train_tf.txt' or 'test_tf.txt'",
+    )
     parser.add_argument("--num_workers", type=int, default=os.cpu_count())
     args = parser.parse_args()
     return args
@@ -38,8 +43,8 @@ def search_file_iter(dir: Path) -> t.Iterator[Path]:
                 yield Path(_dirpath) / _filename
 
 
-def data_file_iter(dir: Path) -> t.Iterator[Path]:
-    with open(file=dir / "train_tf.txt", mode="rt") as f:
+def data_file_iter(dir: Path, data_filepath: Path) -> t.Iterator[Path]:
+    with open(data_filepath, mode="rt") as f:
         line: str
         for line in f:
             line = line.rstrip()
@@ -78,7 +83,12 @@ def main() -> None:
         future_to_fpath: t.Dict[concurrent.futures.Future[None], Cmd] = {}
         cmd: Cmd
         # for i, filepath in enumerate(search_file_iter(args.data_dir)):
-        for i, filepath in enumerate(data_file_iter(args.data_dir)):
+        for i, filepath in enumerate(
+            data_file_iter(
+                args.data_dir,
+                data_filepath=args.data_filepath,
+            )
+        ):
             logger.info(f"{i:>5}: {filepath}")
             if not filepath.exists():
                 logger.error(f"{filepath} is not exists")
